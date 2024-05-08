@@ -1,3 +1,4 @@
+use crate::token;
 use crate::token::{Token, TokenKind};
 
 pub struct Lexer {
@@ -10,13 +11,19 @@ pub struct Lexer {
 impl Lexer {
     pub fn new(s: &str) -> Lexer {
         let mut l = Lexer {
-            input: s.to_string(),
+            input: s.trim().to_string(),
             position: 0,
             read_position: 0,
             ch: ' ',
         };
         l.read_char();
         l
+    }
+
+    fn skip_whitespace(&mut self) {
+        while self.ch == ' ' || self.ch == '\n' || self.ch == '\t' || self.ch == '\r' {
+            self.read_char();
+        }
     }
 
     fn read_char(&mut self) {
@@ -29,17 +36,46 @@ impl Lexer {
         self.read_position += 1;
     }
 
-    fn read_identifier(&mut self) -> Token {
+    fn read_number(&mut self) -> Token {
         let position = self.position;
 
-        while self.ch.is_alphabetic() {
+        while self.ch.is_digit(10) {
             self.read_char();
         }
 
-        Token::new(TokenKind::IDENT(self.input.chars().collect::<Vec<char>>()[position..self.position].iter().collect()), None)
+        Token::new(
+            TokenKind::INT(
+                self.input.chars().collect::<Vec<char>>()[position..self.position]
+                    .iter()
+                    .collect::<String>()
+                    .parse::<i128>()
+                    .unwrap(),
+            ),
+            None,
+        )
+    }
+
+    fn read_identifier(&mut self) -> Token {
+        let position = self.position;
+
+        while self.ch.is_alphabetic() || self.ch == '_' {
+            self.read_char();
+        }
+
+        Token::new(
+            token::lookup_ident(
+                self.input.chars().collect::<Vec<char>>()[position..self.position]
+                    .iter()
+                    .collect::<String>()
+                    .as_str(),
+            ),
+            None,
+        )
     }
 
     pub fn next_token(&mut self) -> Token {
+        self.skip_whitespace();
+
         let tok = match self.ch {
             '=' => Token::new(TokenKind::ASSIGN, None),
             ';' => Token::new(TokenKind::SEMICOLON, None),
@@ -51,12 +87,14 @@ impl Lexer {
             '}' => Token::new(TokenKind::RBRACE, None),
             '\0' => Token::new(TokenKind::EOF, None),
             _ => {
-                if self.ch.is_alphabetic() {
-                    self.read_identifier()
+                if self.ch.is_alphabetic() || self.ch == '_' {
+                    return self.read_identifier();
+                } else if self.ch.is_digit(10) {
+                    return self.read_number();
                 } else {
                     Token::new(TokenKind::ILLEGAL, None)
                 }
-            },
+            }
         };
         self.read_char();
         tok
@@ -94,7 +132,7 @@ pub mod tests {
 
     #[test]
     fn test_next_token_expanded() {
-        let input = "let five = 5\n\
+        let input = "let five = 5;\n\
         let ten = 10;\n\
         let add = fn(x, y) {\n\
             x + y;\n\
@@ -141,5 +179,14 @@ pub mod tests {
             Token::new(TokenKind::SEMICOLON, None),
             Token::new(TokenKind::EOF, None),
         ];
+
+        let mut l = Lexer::new(input);
+
+        for tt in test_arr.iter() {
+            let tok = l.next_token();
+            println!("tok lit = {}, tt lit = {}", tok.literal, tt.literal);
+            assert_eq!(tok.ttype, tt.ttype);
+            assert_eq!(tok.literal, tt.literal)
+        }
     }
 }

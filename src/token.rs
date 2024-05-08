@@ -1,13 +1,14 @@
+use phf::phf_map;
 use std::path::Path;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum TokenKind {
     ILLEGAL,
     EOF,
 
     // Identifiers + literals
     IDENT(String),
-    INT(usize),
+    INT(i128),
 
     // Operators
     ASSIGN,
@@ -60,8 +61,8 @@ impl<'a> Token<'a> {
             TokenKind::RPAREN => String::from(")"),
             TokenKind::LBRACE => String::from("{"),
             TokenKind::RBRACE => String::from("}"),
-            TokenKind::FUNCTION => String::from("fn"),
-            TokenKind::LET => String::from("let"),
+            TokenKind::FUNCTION => String::from("FUNCTION"),
+            TokenKind::LET => String::from("LET"),
         };
 
         Token {
@@ -69,5 +70,17 @@ impl<'a> Token<'a> {
             literal,
             local,
         }
+    }
+}
+
+static KEYWORDS: phf::Map<&'static str, TokenKind> = phf_map! {
+    "let" => TokenKind::LET,
+    "fn" => TokenKind::FUNCTION,
+};
+
+pub fn lookup_ident(ident: &str) -> TokenKind {
+    match KEYWORDS.get(ident) {
+        Some(t) => t.clone(),
+        None => TokenKind::IDENT(ident.to_string()),
     }
 }
