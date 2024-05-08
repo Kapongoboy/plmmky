@@ -1,6 +1,7 @@
 use std::path::Path;
 
-pub enum TokenType {
+#[derive(Debug, PartialEq)]
+pub enum TokenKind {
     ILLEGAL,
     EOF,
 
@@ -44,28 +45,28 @@ impl <'a> Location<'a> {
 }
 
 pub struct Token<'a> {
-    pub ttype: TokenType,
+    pub ttype: TokenKind,
     pub literal: String,
     local: Option<Location<'a>>,
 }
 
 impl<'a> Token<'a> {
-    pub fn new(token_type: TokenType, local: Option<Location>) -> Token {
+    pub fn new(token_type: TokenKind, local: Option<Location>) -> Token {
         let literal = match token_type {
-            TokenType::EOF => String::from(""),
-            TokenType::ILLEGAL => String::from("ILLEGAL"),
-            TokenType::IDENT(ref s) => s.clone(),
-            TokenType::INT(i) => i.to_string(),
-            TokenType::ASSIGN => String::from("="),
-            TokenType::PLUS => String::from("+"),
-            TokenType::COMMA => String::from(","),
-            TokenType::SEMICOLON => String::from(";"),
-            TokenType::LPAREN => String::from("("),
-            TokenType::RPAREN => String::from(")"),
-            TokenType::LBRACE => String::from("{"),
-            TokenType::RBRACE => String::from("}"),
-            TokenType::FUNCTION => String::from("FUNCTION"),
-            TokenType::LET => String::from("LET"),
+            TokenKind::EOF => String::from(""),
+            TokenKind::ILLEGAL => String::from("ILLEGAL"),
+            TokenKind::IDENT(ref s) => s.clone(),
+            TokenKind::INT(i) => i.to_string(),
+            TokenKind::ASSIGN => String::from("="),
+            TokenKind::PLUS => String::from("+"),
+            TokenKind::COMMA => String::from(","),
+            TokenKind::SEMICOLON => String::from(";"),
+            TokenKind::LPAREN => String::from("("),
+            TokenKind::RPAREN => String::from(")"),
+            TokenKind::LBRACE => String::from("{"),
+            TokenKind::RBRACE => String::from("}"),
+            TokenKind::FUNCTION => String::from("FUNCTION"),
+            TokenKind::LET => String::from("LET"),
         };
 
         Token {
