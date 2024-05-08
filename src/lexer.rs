@@ -1,6 +1,25 @@
+pub struct Lexer {
+    input: String,
+    position: usize, // current position
+    read_position: usize, // next position
+    byte: u8,
+}
+
+impl Lexer {
+    pub fn new(s: &str) -> Lexer {
+        Lexer {
+            input: s.to_string(),
+            position: 0,
+            read_position: 0,
+            byte: b' ',
+        }
+    }
+}
+
 #[cfg(test)]
 pub mod tests {
     use crate::token::{Token,TokenType};
+    use crate::lexer::Lexer;
 
     #[test]
     fn test_next_token(){
