@@ -5,25 +5,24 @@ pub enum TokenKind {
     ILLEGAL,
     EOF,
 
-// Identifiers + literals
+    // Identifiers + literals
     IDENT(String),
     INT(usize),
 
-// Operators
+    // Operators
     ASSIGN,
     PLUS,
 
-// Delimiters
+    // Delimiters
     COMMA,
     SEMICOLON,
-
 
     LPAREN,
     RPAREN,
     LBRACE,
     RBRACE,
 
-// Keywords
+    // Keywords
     FUNCTION,
     LET,
 }
@@ -34,13 +33,9 @@ pub struct Location<'a> {
     file: &'a Path,
 }
 
-impl <'a> Location<'a> {
-    pub fn new(row: usize, col: usize, path: &str) -> Location {
-        Location {
-            row,
-            col,
-            file: Path::new(path)
-        }
+impl<'a> Location<'a> {
+    pub fn new(row: usize, col: usize, file: &Path) -> Location {
+        Location { row, col, file }
     }
 }
 
@@ -65,17 +60,14 @@ impl<'a> Token<'a> {
             TokenKind::RPAREN => String::from(")"),
             TokenKind::LBRACE => String::from("{"),
             TokenKind::RBRACE => String::from("}"),
-            TokenKind::FUNCTION => String::from("FUNCTION"),
-            TokenKind::LET => String::from("LET"),
+            TokenKind::FUNCTION => String::from("fn"),
+            TokenKind::LET => String::from("let"),
         };
 
         Token {
             ttype: token_type,
             literal,
-            local: match local {
-                Some(l) => Some(l),
-                None => None
-            }
+            local,
         }
     }
 }
