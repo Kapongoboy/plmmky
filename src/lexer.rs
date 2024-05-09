@@ -138,7 +138,7 @@ impl<'a> Lexer<'a> {
                 } else {
                     Token::new(TokenKind::ASSIGN, loc)
                 }
-            },
+            }
             ';' => Token::new(TokenKind::SEMICOLON, loc),
             '(' => Token::new(TokenKind::LPAREN, loc),
             ')' => Token::new(TokenKind::RPAREN, loc),
@@ -153,7 +153,7 @@ impl<'a> Lexer<'a> {
                 } else {
                     Token::new(TokenKind::BANG, loc)
                 }
-            },
+            }
             '-' => Token::new(TokenKind::MINUS, loc),
             '*' => Token::new(TokenKind::ASTERISK, loc),
             '/' => Token::new(TokenKind::SLASH, loc),
