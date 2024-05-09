@@ -13,6 +13,16 @@ pub enum TokenKind {
     // Operators
     ASSIGN,
     PLUS,
+    MINUS,
+    BANG,
+    ASTERISK,
+    SLASH,
+
+    LT,
+    GT,
+
+    EQ,
+    NEQ,
 
     // Delimiters
     COMMA,
@@ -26,6 +36,11 @@ pub enum TokenKind {
     // Keywords
     FUNCTION,
     LET,
+    TRUE,
+    FALSE,
+    IF,
+    ELSE,
+    RETURN,
 }
 
 pub struct Location<'a> {
@@ -55,6 +70,14 @@ impl<'a> Token<'a> {
             TokenKind::INT(i) => i.to_string(),
             TokenKind::ASSIGN => String::from("="),
             TokenKind::PLUS => String::from("+"),
+            TokenKind::MINUS => String::from("-"),
+            TokenKind::BANG => String::from("!"),
+            TokenKind::ASTERISK => String::from("*"),
+            TokenKind::SLASH => String::from("/"),
+            TokenKind::LT => String::from("<"),
+            TokenKind::GT => String::from(">"),
+            TokenKind::EQ => String::from("=="),
+            TokenKind::NEQ => String::from("!="),
             TokenKind::COMMA => String::from(","),
             TokenKind::SEMICOLON => String::from(";"),
             TokenKind::LPAREN => String::from("("),
@@ -63,6 +86,11 @@ impl<'a> Token<'a> {
             TokenKind::RBRACE => String::from("}"),
             TokenKind::FUNCTION => String::from("FUNCTION"),
             TokenKind::LET => String::from("LET"),
+            TokenKind::TRUE => String::from("TRUE"),
+            TokenKind::FALSE => String::from("FALSE"),
+            TokenKind::IF => String::from("IF"),
+            TokenKind::ELSE => String::from("ELSE"),
+            TokenKind::RETURN => String::from("RETURN"),
         };
 
         Token {
@@ -76,6 +104,11 @@ impl<'a> Token<'a> {
 static KEYWORDS: phf::Map<&'static str, TokenKind> = phf_map! {
     "let" => TokenKind::LET,
     "fn" => TokenKind::FUNCTION,
+    "true" => TokenKind::TRUE,
+    "false" => TokenKind::FALSE,
+    "if" => TokenKind::IF,
+    "else" => TokenKind::ELSE,
+    "return" => TokenKind::RETURN,
 };
 
 pub fn lookup_ident(ident: &str) -> TokenKind {
