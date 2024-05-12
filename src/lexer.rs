@@ -61,7 +61,7 @@ impl<'a> Lexer<'a> {
         self.read_position += 1;
     }
 
-    fn read_number(&mut self) -> Token {
+    fn read_number(&mut self) -> Token<'a> {
         let position = self.position;
 
         while self.ch.is_digit(10) {
@@ -90,7 +90,7 @@ impl<'a> Lexer<'a> {
         )
     }
 
-    fn read_identifier(&mut self) -> Token {
+    fn read_identifier(&mut self) -> Token<'a> {
         let position = self.position;
 
         while self.ch.is_alphabetic() || self.ch == '_' {
@@ -114,11 +114,11 @@ impl<'a> Lexer<'a> {
                     .collect::<String>()
                     .as_str(),
             ),
-            None,
+            loc,
         )
     }
 
-    pub fn next_token(&mut self) -> Token {
+    pub fn next_token(&mut self) -> Token<'a> {
         self.skip_whitespace();
         let loc = if self.repl {
             None
@@ -172,6 +172,14 @@ impl<'a> Lexer<'a> {
         };
         self.read_char();
         tok
+    }
+}
+
+impl<'a> Iterator for Lexer<'a> {
+    type Item = Token<'a>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        Some(self.next_token())
     }
 }
 
@@ -261,10 +269,9 @@ pub mod tests {
                     Token::new(TokenKind::EOF, None),
                 ];
 
-                let mut l = Lexer::new(input, false, Some(path));
+                let l = Lexer::new(input, false, Some(path));
 
-                for tt in test_arr.iter() {
-                    let tok = l.next_token();
+                for (tt, tok) in test_arr.iter().zip(l.into_iter()) {
                     assert_eq!(tok.ttype, tt.ttype);
                     assert_eq!(tok.literal, tt.literal)
                 }
@@ -373,10 +380,9 @@ pub mod tests {
             Token::new(TokenKind::EOF, None),
         ];
 
-        let mut l = Lexer::new(input, true, None);
+        let l = Lexer::new(input, true, None);
 
-        for tt in test_arr.iter() {
-            let tok = l.next_token();
+        for (tt, tok) in test_arr.iter().zip(l.into_iter()) {
             assert_eq!(tok.ttype, tt.ttype);
             assert_eq!(tok.literal, tt.literal)
         }
