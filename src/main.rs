@@ -1,6 +1,7 @@
 pub mod lexer;
 pub mod repl;
 pub mod token;
+pub mod ast;
 
 fn main() {
     let user = match std::env::var("USER") {
