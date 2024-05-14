@@ -86,7 +86,7 @@ impl<'a> Lexer<'a> {
                     .parse::<i128>()
                     .unwrap(),
             ),
-            None,
+            loc,
         )
     }
 
