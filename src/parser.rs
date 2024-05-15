@@ -29,3 +29,37 @@ impl<'a> Parser<'a> {
         None
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::ast::Node;
+
+    use super::*;
+
+    fn test_let_statement(s: &Box<dyn ast::Statement>, test_name: &str) {
+        assert_eq!(s.name().value(), test_name);
+        assert_eq!(s.name().token_literal(), test_name);
+    }
+
+    #[test]
+    fn test_let_statements() {
+        let input = "let x = 5;\n\
+        let y = 10;\n\
+        let foobar = 838383;";
+
+        let mut l = Lexer::new(input, true, None);
+        let p = Parser::new(&mut l);
+
+        let program = p.parse_program();
+
+        assert_ne!(program, None);
+
+        assert_eq!(program.expect("Program should be Some here").statements.len(), 3);
+
+        let expected_identifiers = vec!["x", "y", "foobar"];
+
+        for (stmt, idtfr) in program.expect("Program should be Some here").statements.iter().zip(expected_identifiers.iter()) {
+            test_let_statement(stmt, idtfr);
+        }
+    }
+}
