@@ -103,6 +103,16 @@ impl<'a> Token<'a> {
     }
 }
 
+impl<'a> Default for Token<'a> {
+    fn default() -> Token<'a> {
+        Token {
+            ttype: TokenKind::EOF,
+            literal: String::from(""),
+            local: None,
+        }
+    }
+}
+
 static KEYWORDS: phf::Map<&'static str, TokenKind> = phf_map! {
     "let" => TokenKind::LET,
     "fn" => TokenKind::FUNCTION,
