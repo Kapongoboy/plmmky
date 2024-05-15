@@ -33,10 +33,10 @@ struct Identifier<'a> {
 struct LetStatement<'a> {
     token: Token<'a>,
     name: &'a Identifier<'a>,
-    value: Box<dyn Expression>
+    value: Box<dyn Expression>,
 }
 
-impl <'a> Node for LetStatement<'a> {
+impl<'a> Node for LetStatement<'a> {
     fn token_literal(&self) -> String {
         self.token.literal.clone()
     }
