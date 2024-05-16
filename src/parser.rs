@@ -2,7 +2,7 @@ use crate::ast;
 use crate::lexer::Lexer;
 use crate::token::{Token, TokenKind};
 
-struct Parser<'a> {
+pub struct Parser<'a> {
     lex: &'a mut Lexer<'a>,
     cur_token: Token<'a>,
     peek_token: Token<'a>,
@@ -32,13 +32,11 @@ impl<'a> Parser<'a> {
 
 #[cfg(test)]
 mod tests {
-    use crate::ast::Node;
 
     use super::*;
 
     fn test_let_statement(s: &Box<dyn ast::Statement>, test_name: &str) {
-        assert_eq!(s.name().value(), test_name);
-        assert_eq!(s.name().token_literal(), test_name);
+        assert_eq!(s.token_literal(), test_name);
     }
 
     #[test]
@@ -54,7 +52,7 @@ mod tests {
 
         assert_ne!(program, None);
 
-        assert_eq!(program.expect("Program should be Some here").statements.len(), 3);
+        assert_eq!(&program.as_ref().expect("Program should be Some here").statements.len(), &3);
 
         let expected_identifiers = vec!["x", "y", "foobar"];
 
