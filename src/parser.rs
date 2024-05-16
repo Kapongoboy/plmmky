@@ -1,7 +1,6 @@
 use crate::ast;
 use crate::lexer::Lexer;
 use crate::token::{Token, TokenKind};
-use std::any::Any;
 
 pub struct Parser<'a> {
     lex: Lexer<'a>,
@@ -110,15 +109,11 @@ mod tests {
     use super::*;
 
     fn test_let_statement(s: &Box<dyn ast::Statement>, test_name: &str) {
-        let s_any = s as &dyn Any;
+        let s_any = s as &dyn std::any::Any;
+
         match s_any.downcast_ref::<ast::LetStatement>() {
-            Some(stmt) => {
-                assert_eq!(
-                    stmt.name().expect("the identifier is empty").value(),
-                    test_name
-                );
-            }
-            None => panic!("expected LetStatement, got {:?}", &s.token_literal()),
+            Some(stmt) => assert_eq!(stmt.name().unwrap().value(), test_name),
+            None => panic!("Expected LetStatement, got {:?}", &s.token_literal()),
         }
     }
 
