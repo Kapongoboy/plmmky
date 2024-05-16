@@ -25,8 +25,28 @@ impl<'a> Parser<'a> {
         self.peek_token = self.lex.next_token();
     }
 
+    fn parse_statement(&self) -> Option<dyn ast::Statement> {
+        match self.cur_token.ttype {
+            TokenKind::LET => Some(self.parse_let_statement()),
+            _ => None
+        }
+    }
+
     pub fn parse_program(&self) -> Option<ast::Program> {
-        None
+        let mut program = ast::Program { statements: vec![]};
+
+        while self.cur_token.ttype != TokenKind::EOF {
+            let stmt = self.parse_statement();
+
+            match stmt {
+                Some(s) => program.statements.push(Box::new(s)),
+                None => (),
+            }
+
+            self.next_token();
+        }
+
+        Some(program)
     }
 }
 

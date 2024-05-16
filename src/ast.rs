@@ -1,6 +1,8 @@
 use crate::token::Token;
 use std::cmp::PartialEq;
 use std::fmt::{Debug, Formatter, Result};
+use std::marker::Sized;
+
 
 pub trait Node {
     fn token_literal(&self) -> String;
