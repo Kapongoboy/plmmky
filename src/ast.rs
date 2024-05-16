@@ -14,11 +14,11 @@ pub trait Expression: Node {
     fn expression_node(&self);
 }
 
-pub struct Program {
-    pub statements: Vec<Box<dyn Statement>>,
+pub struct Program<'a> {
+    pub statements: Vec<Box<dyn Statement + 'a>>,
 }
 
-impl Debug for Program {
+impl Debug for Program<'_> {
     fn fmt(&self, f: &mut Formatter) -> Result {
         let mut s = String::new();
         for stmt in &self.statements {
@@ -28,7 +28,7 @@ impl Debug for Program {
     }
 }
 
-impl PartialEq for Program {
+impl PartialEq for Program<'_> {
     fn eq(&self, other: &Self) -> bool {
         for (left, right) in self.statements.iter().zip(other.statements.iter()) {
             if left.token_literal() != right.token_literal() {
@@ -39,11 +39,16 @@ impl PartialEq for Program {
     }
 }
 
-impl Program {
+impl Program<'_> {
     pub fn token_literal(&self) -> String {
-        match self.statements.len() {
-            0 => String::from(""),
-            _ => self.statements[0].token_literal(),
+        if self.statements.len() > 0 {
+            self.statements
+                .iter()
+                .next()
+                .expect("failed to get the token")
+                .token_literal()
+        } else {
+            String::new()
         }
     }
 }
@@ -88,6 +93,10 @@ impl<'a> LetStatement<'a> {
             name: result,
             value,
         }
+    }
+
+    pub fn change_name(&mut self, name: Identifier<'a>) {
+        self.name = Some(Box::new(name));
     }
 
     pub fn token(&self) -> &Token<'a> {
