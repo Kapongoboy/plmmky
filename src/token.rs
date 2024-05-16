@@ -43,7 +43,7 @@ pub enum TokenKind {
     RETURN,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Location<'a> {
     row: usize,
     col: usize,
@@ -56,7 +56,7 @@ impl<'a> Location<'a> {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Token<'a> {
     pub ttype: TokenKind,
     pub literal: String,

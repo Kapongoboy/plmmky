@@ -1,8 +1,6 @@
 use crate::token::Token;
 use std::cmp::PartialEq;
 use std::fmt::{Debug, Formatter, Result};
-use std::marker::Sized;
-
 
 pub trait Node {
     fn token_literal(&self) -> String;
@@ -56,6 +54,10 @@ pub struct Identifier<'a> {
 }
 
 impl Identifier<'_> {
+    pub fn new(token: Token, value: String) -> Identifier {
+        Identifier { token, value }
+    }
+
     pub fn token(&self) -> &Token {
         &self.token
     }
@@ -67,21 +69,37 @@ impl Identifier<'_> {
 
 pub struct LetStatement<'a> {
     token: Token<'a>,
-    name: &'a Identifier<'a>,
-    value: Box<dyn Expression>,
+    name: Option<Box<Identifier<'a>>>,
+    value: Option<Box<dyn Expression>>,
 }
 
 impl<'a> LetStatement<'a> {
+    pub fn new(
+        token: Token<'a>,
+        name: Option<Identifier<'a>>,
+        value: Option<Box<dyn Expression>>,
+    ) -> LetStatement<'a> {
+        let result = match name {
+            Some(n) => Some(Box::new(n)),
+            None => None,
+        };
+        LetStatement {
+            token,
+            name: result,
+            value,
+        }
+    }
+
     pub fn token(&self) -> &Token<'a> {
         &self.token
     }
 
-    pub fn name(&self) -> &Identifier<'a> {
-        self.name
+    pub fn name(&self) -> Option<&Box<Identifier<'a>>> {
+        self.name.as_ref()
     }
 
-    pub fn value(&self) -> &Box<dyn Expression> {
-        &self.value
+    pub fn value(&self) -> Option<&Box<dyn Expression>> {
+        self.value.as_ref()
     }
 }
 
