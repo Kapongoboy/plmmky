@@ -54,6 +54,10 @@ impl<'a> Location<'a> {
     pub fn new(row: usize, col: usize, file: &Path) -> Location {
         Location { row, col, file }
     }
+
+    pub fn get(&self) -> (& usize, & usize, &'a Path) {
+        (&self.row, &self.col, self.file)
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -99,6 +103,14 @@ impl<'a> Token<'a> {
             ttype: token_type,
             literal,
             local,
+        }
+    }
+
+    pub fn local(&self) -> Option<& Location<'a>> {
+        match &self.local {
+            Some(i) => Some(i),
+            None => None
+                
         }
     }
 }
