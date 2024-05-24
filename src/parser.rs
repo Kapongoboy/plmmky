@@ -91,9 +91,8 @@ impl<'a> Parser<'a> {
         while self.cur_token.ttype != TokenKind::EOF {
             let stmt = self.parse_statement();
 
-            match stmt {
-                Some(s) => program.statements.push(s),
-                None => (),
+            if let Some(s) = stmt {
+                program.statements.push(s);
             }
 
             self.next_token();
