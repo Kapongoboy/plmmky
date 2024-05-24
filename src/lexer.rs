@@ -64,7 +64,7 @@ impl<'a> Lexer<'a> {
     fn read_number(&mut self) -> Token<'a> {
         let position = self.position;
 
-        while self.ch.is_digit(10) {
+        while self.ch.is_ascii_digit() {
             self.read_char();
         }
 
@@ -163,7 +163,7 @@ impl<'a> Lexer<'a> {
             _ => {
                 if self.ch.is_alphabetic() || self.ch == '_' {
                     return self.read_identifier();
-                } else if self.ch.is_digit(10) {
+                } else if self.ch.is_ascii_digit() {
                     return self.read_number();
                 } else {
                     Token::new(TokenKind::ILLEGAL, loc)
