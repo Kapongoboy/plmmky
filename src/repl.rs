@@ -2,7 +2,7 @@ use crate::lexer::Lexer;
 use crate::token::TokenKind;
 use std::io::Write;
 
-const PROMPT: &'static str = ">> ";
+const PROMPT: &str = ">> ";
 
 pub fn start() {
     loop {
