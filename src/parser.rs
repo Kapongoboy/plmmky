@@ -60,7 +60,7 @@ impl<'a> Parser<'a> {
     fn parse_let_statement(&mut self) -> Option<ast::Statement<'a>> {
         let mut internal = ast::LetInternal::new(self.cur_token.clone(), None, None);
 
-        if !self.expect_peek(&TokenKind::IDENT(String::from("something"))) {
+        if !self.expect_peek(&TokenKind::IDENT(String::from("/*something*/"))) {
             return None;
         }
 
@@ -89,7 +89,10 @@ impl<'a> Parser<'a> {
                 let stmt = self.parse_let_statement();
                 match stmt {
                     Some(i) => Some(i),
-                    None => panic!("implementation error, could not make let statement"),
+                    None => {
+                        eprintln!("implementation error, could not make let statement");
+                        None
+                    },
                 }
             }
             _ => None,
@@ -128,6 +131,10 @@ mod tests {
         let mut p = Parser::new(l);
 
         let program = p.parse_program();
+
+        for e in p.errors().iter() {
+            eprintln!("{}", e);
+        }
 
         assert_eq!(p.errors().len(), 0);
 
