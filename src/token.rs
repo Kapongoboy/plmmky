@@ -1,5 +1,8 @@
 use phf::phf_map;
+use std::borrow::Borrow;
 use std::path::Path;
+use std::fmt::Display;
+use std::fmt;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum TokenKind {
@@ -41,6 +44,53 @@ pub enum TokenKind {
     IF,
     ELSE,
     RETURN,
+}
+
+impl Display for TokenKind {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let msg = match self {
+            TokenKind::ILLEGAL => "ILLEGAL".to_string(),
+            TokenKind::EOF => "EOF".to_string(),
+
+            // Identifiers + literals
+            TokenKind::IDENT(inner_string) => "IDENT = ".to_owned() + inner_string,
+            TokenKind::INT(inner_int) => "INT = ".to_owned() + inner_int.to_string().borrow(),
+
+            // Operators
+            TokenKind::ASSIGN => "ASSIGN".to_string(),
+            TokenKind::PLUS => "PLUS".to_string(),
+            TokenKind::MINUS => "MINUS".to_string(),
+            TokenKind::BANG => "BANG".to_string(),
+            TokenKind::ASTERISK => "ASTERISK".to_string(),
+            TokenKind::SLASH => "SLASH".to_string(),
+
+            TokenKind::LT => "LT".to_string(),
+            TokenKind::GT => "GT".to_string(),
+
+            TokenKind::EQ => "EQ".to_string(),
+            TokenKind::NEQ => "NEQ".to_string(),
+
+            // Delimiters
+            TokenKind::COMMA => "COMMA".to_string(),
+            TokenKind::SEMICOLON => "SEMICOLON".to_string(),
+
+            TokenKind::LPAREN => "LPAREN".to_string(),
+            TokenKind::RPAREN => "RPAREN".to_string(),
+            TokenKind::LBRACE => "LBRACE".to_string(),
+            TokenKind::RBRACE => "RBRACE".to_string(),
+
+            // Keywords
+            TokenKind::FUNCTION => "FUNCTION".to_string(),
+            TokenKind::LET => "LET".to_string(),
+            TokenKind::TRUE => "TRUE".to_string(),
+            TokenKind::FALSE => "FALSE".to_string(),
+            TokenKind::IF => "IF".to_string(),
+            TokenKind::ELSE => "ELSE".to_string(),
+            TokenKind::RETURN => "RETURN".to_string(),
+        };
+
+        write!(f, "{}", msg)
+    }
 }
 
 #[derive(Debug, Clone)]
