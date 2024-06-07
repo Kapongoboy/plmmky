@@ -57,6 +57,21 @@ impl<'a> Parser<'a> {
         }
     }
 
+    fn parse_return_statement(&mut self) -> Option<ast::Statement<'a>> {
+        let stmt = ast::Statement::Return(ast::ReturnInternal::init(self.cur_token.clone(), None));
+
+        self.next_token();
+
+        //
+        //TODO: we're skipping expressions until we
+        // encounter a semicolon
+        while !self.cur_token_is(&TokenKind::SEMICOLON) {
+            self.next_token();
+        }
+
+        Some(stmt)
+    }
+
     fn parse_let_statement(&mut self) -> Option<ast::Statement<'a>> {
         let mut internal = ast::LetInternal::new(self.cur_token.clone(), None, None);
 
@@ -91,6 +106,16 @@ impl<'a> Parser<'a> {
                     Some(i) => Some(i),
                     None => {
                         eprintln!("implementation error, could not make let statement");
+                        None
+                    },
+                }
+            },
+            TokenKind::RETURN => {
+                let stmt = self.parse_return_statement();
+                match stmt {
+                    Some(i) => Some(i),
+                    None => {
+                        eprintln!("implementation error, could not make return statement");
                         None
                     },
                 }
@@ -168,6 +193,54 @@ mod tests {
             .zip(expected_identifiers.iter())
         {
             check_let_statement(stmt, name)
+        }
+    }
+
+
+    #[test]
+    fn test_return_statements() {
+        let input = "return 5;\n\
+        return 10;\n\
+        return 993322;";
+
+        let l = Lexer::new(input, true, None);
+        let mut p = Parser::new(l);
+
+        let program = p.parse_program();
+
+        for e in p.errors().iter() {
+            eprintln!("{}", e);
+        }
+
+        assert_eq!(p.errors().len(), 0);
+
+        assert_ne!(program, None);
+
+        assert_eq!(
+            &program
+                .as_ref()
+                .expect("Program should be Some here")
+                .statements
+                .len(),
+            &3
+        );
+
+        let check_return_statement = |stmt: &ast::Statement| match stmt {
+            ast::Statement::Return(i) => {
+                assert_eq!(
+                    i.token_literal(),
+                    "RETURN"
+                )
+            }
+            _ => panic!("expected return statement but got something else"),
+        };
+
+        for stmt in program
+            .expect("Program should be Some here")
+            .statements
+            .iter()
+        {
+            check_return_statement(stmt)
         }
     }
 }
