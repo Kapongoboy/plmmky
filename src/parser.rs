@@ -27,7 +27,10 @@ impl<'a> Parser<'a> {
     }
 
     fn peek_error(&mut self, t: &TokenKind) {
-        let msg = format!("expected next token to be {}, got {} instead", t, self.peek_token.ttype);
+        let msg = format!(
+            "expected next token to be {}, got {} instead",
+            t, self.peek_token.ttype
+        );
         self.errors.push(msg);
     }
 
@@ -49,8 +52,8 @@ impl<'a> Parser<'a> {
 
     fn expect_peek(&mut self, t: &TokenKind) -> bool {
         if self.peek_token_is(t) {
-                self.next_token();
-                true
+            self.next_token();
+            true
         } else {
             self.peek_error(t);
             false
@@ -107,9 +110,9 @@ impl<'a> Parser<'a> {
                     None => {
                         eprintln!("implementation error, could not make let statement");
                         None
-                    },
+                    }
                 }
-            },
+            }
             TokenKind::RETURN => {
                 let stmt = self.parse_return_statement();
                 match stmt {
@@ -117,7 +120,7 @@ impl<'a> Parser<'a> {
                     None => {
                         eprintln!("implementation error, could not make return statement");
                         None
-                    },
+                    }
                 }
             }
             _ => None,
@@ -196,7 +199,6 @@ mod tests {
         }
     }
 
-
     #[test]
     fn test_return_statements() {
         let input = "return 5;\n\
@@ -227,10 +229,7 @@ mod tests {
 
         let check_return_statement = |stmt: &ast::Statement| match stmt {
             ast::Statement::Return(i) => {
-                assert_eq!(
-                    i.token_literal(),
-                    "RETURN"
-                )
+                assert_eq!(i.token_literal(), "RETURN")
             }
             _ => panic!("expected return statement but got something else"),
         };

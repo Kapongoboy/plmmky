@@ -62,14 +62,11 @@ impl<'a> LetInternal<'a> {
 
 pub struct ReturnInternal<'a> {
     token: Token<'a>,
-    return_value: Option<Box<dyn Expression>>
+    return_value: Option<Box<dyn Expression>>,
 }
 
 impl<'a> ReturnInternal<'a> {
-    pub fn init(
-        token: Token<'a>,
-        return_value: Option<Box<dyn Expression>>,
-    ) -> Self {
+    pub fn init(token: Token<'a>, return_value: Option<Box<dyn Expression>>) -> Self {
         Self {
             token,
             return_value,

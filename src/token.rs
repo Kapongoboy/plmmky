@@ -1,8 +1,8 @@
 use phf::phf_map;
 use std::borrow::Borrow;
-use std::path::Path;
-use std::fmt::Display;
 use std::fmt;
+use std::fmt::Display;
+use std::path::Path;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum TokenKind {
@@ -105,7 +105,7 @@ impl<'a> Location<'a> {
         Location { row, col, file }
     }
 
-    pub fn get(&self) -> (& usize, & usize, &'a Path) {
+    pub fn get(&self) -> (&usize, &usize, &'a Path) {
         (&self.row, &self.col, self.file)
     }
 }
@@ -156,11 +156,10 @@ impl<'a> Token<'a> {
         }
     }
 
-    pub fn local(&self) -> Option<& Location<'a>> {
+    pub fn local(&self) -> Option<&Location<'a>> {
         match &self.local {
             Some(i) => Some(i),
-            None => None
-                
+            None => None,
         }
     }
 }
