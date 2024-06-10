@@ -157,10 +157,7 @@ impl<'a> Token<'a> {
     }
 
     pub fn local(&self) -> Option<&Location<'a>> {
-        match &self.local {
-            Some(i) => Some(i),
-            None => None,
-        }
+        self.local.as_ref().map(|i| i)
     }
 }
 

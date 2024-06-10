@@ -105,23 +105,11 @@ impl<'a> Parser<'a> {
         match self.cur_token.ttype {
             TokenKind::LET => {
                 let stmt = self.parse_let_statement();
-                match stmt {
-                    Some(i) => Some(i),
-                    None => {
-                        eprintln!("implementation error, could not make let statement");
-                        None
-                    }
-                }
+                stmt.map(|i| i)
             }
             TokenKind::RETURN => {
                 let stmt = self.parse_return_statement();
-                match stmt {
-                    Some(i) => Some(i),
-                    None => {
-                        eprintln!("implementation error, could not make return statement");
-                        None
-                    }
-                }
+                stmt.map(|i| i)
             }
             _ => None,
         }
