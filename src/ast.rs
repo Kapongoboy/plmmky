@@ -78,9 +78,28 @@ impl<'a> ReturnInternal<'a> {
     }
 }
 
+pub struct ExpressionInternal<'a> {
+    token: Token<'a>,
+    expression: Option<Box<dyn Expression>>
+}
+
+impl<'a> ExpressionInternal<'a> {
+    pub fn init(token: Token<'a>, expression: Option<Box<dyn Expression>>) -> Self {
+        Self {
+            token,
+            expression
+        }
+    }
+
+    pub fn token_literal(&self) -> &str {
+        &self.token.literal
+    }
+}
+
 pub enum Statement<'a> {
     Let(LetInternal<'a>),
     Return(ReturnInternal<'a>),
+    Expression(ExpressionInternal<'a>)
 }
 
 pub struct Program<'a> {
