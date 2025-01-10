@@ -10,7 +10,7 @@ pub struct Parser<'a> {
 }
 
 impl<'a> Parser<'a> {
-    pub fn new(lex: Lexer<'a>) -> Parser {
+    pub fn new(lex: Lexer) -> Parser {
         let mut p = Parser {
             lex,
             cur_token: Token::new(TokenKind::EOF, None),
