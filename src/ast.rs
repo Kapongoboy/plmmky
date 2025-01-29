@@ -80,15 +80,12 @@ impl<'a> ReturnInternal<'a> {
 
 pub struct ExpressionInternal<'a> {
     token: Token<'a>,
-    expression: Option<Box<dyn Expression>>
+    expression: Option<Box<dyn Expression>>,
 }
 
 impl<'a> ExpressionInternal<'a> {
     pub fn init(token: Token<'a>, expression: Option<Box<dyn Expression>>) -> Self {
-        Self {
-            token,
-            expression
-        }
+        Self { token, expression }
     }
 
     pub fn token_literal(&self) -> &str {
@@ -99,12 +96,20 @@ impl<'a> ExpressionInternal<'a> {
 pub enum Statement<'a> {
     Let(LetInternal<'a>),
     Return(ReturnInternal<'a>),
-    Expression(ExpressionInternal<'a>)
+    Expression(ExpressionInternal<'a>),
 }
 
+#[derive(Default)]
 pub struct Program<'a> {
     pub statements: Vec<Statement<'a>>,
 }
+
+impl Program<'_> {
+    pub fn new() -> Self {
+        Self { statements: vec![] }
+    }
+}
+
 
 impl Debug for Program<'_> {
     fn fmt(&self, f: &mut Formatter) -> Result {
