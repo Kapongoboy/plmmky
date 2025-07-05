@@ -3,7 +3,7 @@ use crate::token::{Token, TokenKind};
 use std::path::Path;
 
 pub struct Lexer<'a> {
-    input: String,
+    input: Vec<char>,
     position: usize,      // current position
     read_position: usize, // next position
     ch: char,
@@ -16,7 +16,7 @@ pub struct Lexer<'a> {
 impl<'a> Lexer<'a> {
     pub fn new(s: &str, repl: bool, path: Option<&'a Path>) -> Lexer<'a> {
         let mut l = Lexer {
-            input: s.trim().to_string(),
+            input: s.trim().to_string().chars().collect(),
             position: 0,
             read_position: 0,
             ch: ' ',
@@ -39,7 +39,7 @@ impl<'a> Lexer<'a> {
         if self.read_position >= self.input.len() {
             '\0'
         } else {
-            self.input.chars().collect::<Vec<char>>()[self.read_position]
+            self.input[self.read_position]
         }
     }
 
@@ -47,7 +47,7 @@ impl<'a> Lexer<'a> {
         if self.read_position >= self.input.len() {
             self.ch = '\0';
         } else {
-            self.ch = self.input.chars().collect::<Vec<char>>()[self.read_position];
+            self.ch = self.input[self.read_position];
         }
 
         if self.ch == '\n' {
@@ -80,7 +80,7 @@ impl<'a> Lexer<'a> {
 
         Token::new(
             TokenKind::INT(
-                self.input.chars().collect::<Vec<char>>()[position..self.position]
+                self.input[position..self.position]
                     .iter()
                     .collect::<String>()
                     .parse::<i128>()
@@ -109,7 +109,7 @@ impl<'a> Lexer<'a> {
 
         Token::new(
             token::lookup_ident(
-                self.input.chars().collect::<Vec<char>>()[position..self.position]
+                self.input[position..self.position]
                     .iter()
                     .collect::<String>()
                     .as_str(),
